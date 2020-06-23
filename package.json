@@ -1,0 +1,36 @@
+{
+  "name": "nodejs-restful-shop",
+  "version": "1.0.0",
+  "description": "Node.js/Express shop with a REST API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nataliecardot/nodejs-restful-shop.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nataliecardot/nodejs-restful-shop/issues"
+  },
+  "homepage": "https://github.com/nataliecardot/nodejs-restful-shop#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.5.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.17",
+    "multer": "^1.4.2",
+    "socket.io": "^2.3.0",
+    "uuidv4": "^6.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
