@@ -9,9 +9,6 @@ const { uuid } = require('uuidv4');
 // Tells server to load anything in .env file into an environment variable.
 require('dotenv').config();
 
-const feedRoutes = require('./routes/feed');
-const authRoutes = require('./routes/auth');
-
 const MONGODB_URI =
   // process object is globally available in Node app; part of Node core runtime. The env property contains all environment variables known by process object. Using dotenv to store environment variables. It loads environment variables from .env file into process.env (see https://www.youtube.com/watch?v=17UVejOw3zA)
   `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-4yuid.mongodb.net/${process.env.MONGO_DATABASE_NAME}`;
@@ -58,9 +55,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/feed', feedRoutes);
-app.use('/auth', authRoutes);
-
 // Executed whenever an error is thrown (in sync code) or forwarded (in async code) with next()
 app.use((error, req, res, next) => {
   console.log(error);
@@ -77,12 +71,6 @@ mongoose
     useNewUrlParser: true,
   })
   .then((result) => {
-    const server = app.listen(8080);
-    // Exposes a function that requires the created server as an argument. the listen() method above returns a new Node.js server, so storing it in a constant to pass as that argument. Adding parentheses to execute the function that is returned, with server passed to it. This gives us a socket.io object that sets up all the WebSockets stuff behind the scenes
-    const io = require('./socket').init(server);
-    // Set up event listener to wait for a new connection (whenever a new client connects to server). Execute function that takes client ("socket") that connected as an argument, or to be precise, the connection itself. So a socket is the connection between server and client that connected, and this function will be executed for every new connection
-    io.on('connection', (socket) => {
-      console.log('Client connected.');
-    });
+    app.listen(8080);
   })
   .catch((err) => console.log(err));
