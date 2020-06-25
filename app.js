@@ -4,7 +4,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const multer = require('multer');
+const graphqlHttp = require('express-graphql');
 const { uuid } = require('uuidv4');
+
+const graphqlSchema = require('./graphql/schema');
+const graphqlResolver = require('./graphql/resolvers');
 
 // Tells server to load anything in .env file into an environment variable.
 require('dotenv').config();
@@ -54,6 +58,14 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
+
+app.use(
+  '/graphql',
+  graphqlHttp({
+    schema: graphqlSchema,
+    rootValue: graphqlResolver,
+  })
+);
 
 // Executed whenever an error is thrown (in sync code) or forwarded (in async code) with next()
 app.use((error, req, res, next) => {
