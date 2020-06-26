@@ -1,18 +1,39 @@
 // This file will define queries, mutations, and types in GraphQL service
 const { buildSchema } = require('graphql');
 
-// Exclamation mark makes it required
+// Parentheses after query name allows you to specify arguments that have to be given to that resolver that will run in the end
+// Exclamation point makes it required
 module.exports = buildSchema(`
-  type TestData {
-    text: String!
-    views: Int!
+  type Post {
+    _id: ID!
+    title: String!
+    content: String!
+    imageUrl: String!
+    creator: User!
+    createdAt: String!
+    updatedAt: String!
   }
 
-  type RootQuery {
-    hello: TestData!
+  type User {
+    _id: ID!
+    name: String!
+    email: String!
+    password: String
+    status: String!
+    posts: [Post!]!
+  }
+
+  input UserInputData {
+    email: String!
+    name: String!
+    password: String!
+  }
+
+  type RootMutation {
+    createUser(userInput: UserInputData): User!
   }
 
   schema {
-    query: RootQuery
+    mutation: RootMutation
   }
 `);
