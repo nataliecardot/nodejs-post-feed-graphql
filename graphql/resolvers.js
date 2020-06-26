@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+
 const User = require('../models/user');
 
 // Define logic that will be executed for incoming queries
@@ -15,5 +17,6 @@ module.exports = {
       const error = new Error('User exists already.');
       throw error;
     }
+    const hashedPw = await bcrypt.hash(userInput.password, 12); // 12 salting rounds
   },
 };
