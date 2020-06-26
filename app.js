@@ -64,6 +64,8 @@ app.use(
   graphqlHttp({
     schema: graphqlSchema,
     rootValue: graphqlResolver,
+    // Gives you a special tool -- if you go to localhost:8080/graphql, sends a GET request, and you get a special screen to play around with your GraphQL API. This is why not listening to POST requests only
+    graphiql: true,
   })
 );
 
