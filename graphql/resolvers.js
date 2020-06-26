@@ -18,5 +18,10 @@ module.exports = {
       throw error;
     }
     const hashedPw = await bcrypt.hash(userInput.password, 12); // 12 salting rounds
+    const user = new User({
+      email: userInput.email,
+      name: userInput.name,
+      password: hashedPw,
+    });
   },
 };
