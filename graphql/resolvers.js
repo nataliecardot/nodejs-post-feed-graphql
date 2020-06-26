@@ -22,5 +22,7 @@ module.exports = {
       password: hashedPw,
     });
     const createdUser = await user.save();
+    // _doc field: All the user data, without all the metadata added by Mongoose. Overriding the _id field (to convert from objectId field to string field) by adding it as separate property
+    return { ...createdUser._doc, _id: createdUser._id.toString() };
   },
 };
