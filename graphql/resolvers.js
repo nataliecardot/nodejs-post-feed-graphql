@@ -21,5 +21,6 @@ module.exports = {
       name,
       password: hashedPw,
     });
+    const createdUser = await user.save();
   },
 };
