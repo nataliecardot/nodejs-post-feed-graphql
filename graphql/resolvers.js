@@ -1,4 +1,5 @@
 const bcrypt = require('bcryptjs');
+const validator = require('validator'); // express-validator (used in another project) uses this package behind the scenes
 
 const User = require('../models/user');
 
@@ -11,7 +12,12 @@ module.exports = {
   // Refactored to use ES6 concise method syntax
   async createUser({ userInput: { email, name, password } }, req) {
     // Without ES6 concise method syntax: createUser: async function ({ userInput: { email, name, password } }, req) {
-    // .userInput because named the field that way in schema
+    // userInput because field named that way in schema
+
+    const errors = [];
+    if (!validator.isEmail(email)) {
+      errors.push({ message: 'Invalid email.' });
+    }
     // If not using async/await, need to return User.findOne() with then chained on; if you don't return promise in resolver, GraphQL will not wait for it to resolve. But when using async/await, it's returned behind the scenes
     const existingUser = await User.findOne({ email });
     if (existingUser) {
