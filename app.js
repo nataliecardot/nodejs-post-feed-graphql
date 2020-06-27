@@ -66,6 +66,20 @@ app.use(
     rootValue: graphqlResolver,
     // Gives you a special tool -- if you go to localhost:8080/graphql, sends a GET request, and you get a special screen to play around with your GraphQL API. This is why not listening to POST requests only
     graphiql: true,
+    // Receives error detected by GraphQL and allows you to return your own format
+    formatError(err) {
+      // Original error: thrown in code by you or third-party package (not a technical error)
+      if (!err.originalError) {
+        return err;
+      }
+      // Extract useful info from original error that can use in other places
+      // data property of error object holds errors array; set in resolver (more specific error message(s))
+      const data = err.originalError.data;
+      // General error message
+      const message = err.message || 'An error occurred.';
+      const code = err.originalError.code || 500;
+      return { message, status: code, data };
+    },
   })
 );
 
