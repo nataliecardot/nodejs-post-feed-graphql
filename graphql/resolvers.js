@@ -24,6 +24,10 @@ module.exports = {
     ) {
       errors.push({ message: 'Password is too short.' });
     }
+    if (errors.length > 0) {
+      const error = new Error('Invalid input.');
+      throw error;
+    }
     // If not using async/await, need to return User.findOne() with then chained on; if you don't return promise in resolver, GraphQL will not wait for it to resolve. But when using async/await, it's returned behind the scenes
     const existingUser = await User.findOne({ email });
     if (existingUser) {
