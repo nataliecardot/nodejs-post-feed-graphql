@@ -18,6 +18,12 @@ module.exports = {
     if (!validator.isEmail(email)) {
       errors.push({ message: 'Invalid email.' });
     }
+    if (
+      validator.isEmpty(password) ||
+      !validator.isLength(password, { min: 5 })
+    ) {
+      errors.push({ message: 'Password is too short.' });
+    }
     // If not using async/await, need to return User.findOne() with then chained on; if you don't return promise in resolver, GraphQL will not wait for it to resolve. But when using async/await, it's returned behind the scenes
     const existingUser = await User.findOne({ email });
     if (existingUser) {
