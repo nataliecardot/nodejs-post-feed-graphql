@@ -2,7 +2,9 @@ const bcrypt = require('bcryptjs');
 
 const User = require('../models/user');
 
-// Define logic that will be executed for incoming queries
+// Resolvers: Logic that will be executed for incoming queries
+
+// Mutation
 module.exports = {
   // args: input (args wil be an object containing all the arguments passed to function, a userInput field with email, name, password)
   // Pulling out email and name from userInput, which is pulled out of args. So don't need args.userInput.email, etc.
