@@ -59,7 +59,7 @@ app.use((req, res, next) => {
   // Prevents error. Browser automatically sends an OPTIONS request (determines whether follow-up request is needed) before POST, PATCH, PUT, DELETE, etc., but GraphQL automatically declines anything other than a POST or GET request
   if (req.method === 'OPTIONS') {
     // Returning so OPTIONS requests never make it to GraphQL endpoint but still get a valid response
-    // sendStatus is equivalent to res.status(200).send('OK') [in addition to sending a simple string response, send() automatically closes connection]
+    // sendStatus [Express convenience method] is equivalent to res.status(200).send('OK') [in addition to sending a simple string response, send() automatically closes connection]
     return res.sendStatus(200);
   }
   next();
