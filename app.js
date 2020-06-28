@@ -56,6 +56,10 @@ app.use((req, res, next) => {
   );
   // Headers clients can use on requests
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  // Prevents error. Browser automatically sends an OPTIONS request (determines whether follow-up request is needed) before POST, PATCH, PUT, DELETE, etc., but GraphQL automatically declines anything other than a POST or GET request
+  if (req.method === 'OPTIONS') {
+    return res.status(200);
+  }
   next();
 });
 
