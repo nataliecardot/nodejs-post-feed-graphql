@@ -59,7 +59,7 @@ app.use((req, res, next) => {
   // Prevents error. Browser automatically sends an OPTIONS request (determines whether follow-up request is needed) before POST, PATCH, PUT, DELETE, etc., but GraphQL automatically declines anything other than a POST or GET request
   if (req.method === 'OPTIONS') {
     // Returning so OPTIONS requests never make it to GraphQL endpoint but still get a valid response
-    return res.status(200);
+    return res.sendStatus(200);
   }
   next();
 });
@@ -72,7 +72,7 @@ app.use(
     // Gives you a special tool -- if you go to localhost:8080/graphql, sends a GET request, and you get a special screen to play around with your GraphQL API. This is why not listening to POST requests only
     graphiql: true,
     // Receives error detected by GraphQL and allows you to return your own format
-    customFormatErrorFn(err) {
+    formatError(err) {
       // Original error: thrown in code by you or third-party package (not a technical error)
       if (!err.originalError) {
         return err;
