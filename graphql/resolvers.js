@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const validator = require('validator'); // express-validator (used in another project) uses this package behind the scenes
+const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 
@@ -45,5 +46,32 @@ module.exports = {
     const createdUser = await user.save();
     // _doc field: All the user data, without all the metadata added by Mongoose. Overriding the _id field (to convert from objectId field to string field) by adding it as separate property
     return { ...createdUser._doc, _id: createdUser._id.toString() };
+  },
+  // Get both email and password as args (destructuring from args here) since they are defined in login query
+  async login({ email, password }) {
+    // Find user with corresponding email address and confirm password
+    const user = await User.findOne({ email });
+    if (!user) {
+      const error = new Error('User not found.');
+      error.code = 401; // 401: Could not authenticate (404 would also be acceptable)
+      throw error;
+    }
+    const isEqual = await bcrypt.compare(password, user.password);
+    if (!isEqual) {
+      const error = new Error('Incorrect password.');
+      error.code = 401;
+      throw error;
+    }
+    // Email exists and password is correct; generate token
+    // Data to encode in token is passed to sign() method. Secret is used to sign and verify token
+    const token = jwt.sign(
+      {
+        userId: user._id.toString(),
+        email: user.email,
+      },
+      'somesupersecretsecret',
+      { expiresIn: '1h' }
+    );
+    return { token, userId: user._id.toString() };
   },
 };
