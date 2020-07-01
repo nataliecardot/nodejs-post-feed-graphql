@@ -39,7 +39,6 @@ module.exports = {
       throw error;
     }
     const hashedPw = await bcrypt.hash(password, 12); // 12 salting rounds
-    console.log(email);
     const user = new User({
       email,
       name,
@@ -112,7 +111,6 @@ module.exports = {
       error.code = 401;
       throw error;
     }
-    console.log(title);
     const post = new Post({
       title,
       content,
