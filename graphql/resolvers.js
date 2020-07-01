@@ -77,6 +77,11 @@ module.exports = {
   },
   // Will use req to get user data
   async createPost({ postInput: { title, content, imageUrl } }, req) {
+    if (!req.isAuth) {
+      const error = new Error('Not authenticated.');
+      error.code = 401;
+      throw error;
+    }
     const errors = [];
     if (
       validator.isEmpty(postInput.title) ||
@@ -102,14 +107,22 @@ module.exports = {
       error.code = 422;
       throw error;
     }
+    // userId added to request in middleware/auth.js (extracted from decoded token)
+    const user = await User.findById(req.userId);
+    if (!user) {
+      const error = new Error('Invalid user.');
+      error.data = errors;
+      error.code = 401;
+      throw error;
+    }
     const post = new Post({
       title,
       content,
       imageUrl,
-      // Add creator once can retrieve user
+      creator: user,
     });
     const createdPost = await post.save();
-    // Add post to users' posts once can retrieve user
+    user.posts.push(createdPost);
     // In addition to id, overriding createdAt and updatedAt because these will be stored as date types, which GraphQL doesn't understand
     return {
       ...createdPost._doc,
