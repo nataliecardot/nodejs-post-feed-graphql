@@ -8,6 +8,7 @@ module.exports = (req, res, next) => {
     return next();
   }
   const token = authHeader.split(' ')[1];
+  let decodedToken;
   try {
     // verify method both decodes token and checks if it's valid
     decodedToken = jwt.verify(token, 'somesupersecretsecret');
