@@ -76,7 +76,7 @@ app.use(
     // Gives you a special tool -- if you go to localhost:8080/graphql, sends a GET request, and you get a special screen to play around with your GraphQL API. This is why not listening to POST requests only
     graphiql: true,
     // Receives error detected by GraphQL and allows you to return your own format
-    customFormatErrorFn(err) {
+    formatError(err) {
       // Original error: thrown in code by you or third-party package (not a technical error)
       if (!err.originalError) {
         return err;
