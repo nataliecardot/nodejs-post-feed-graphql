@@ -111,7 +111,6 @@ module.exports = {
     const user = await User.findById(req.userId);
     if (!user) {
       const error = new Error('Invalid user.');
-      error.data = errors;
       error.code = 401;
       throw error;
     }
