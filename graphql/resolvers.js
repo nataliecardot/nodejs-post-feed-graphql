@@ -12,7 +12,7 @@ module.exports = {
   // args: input (args wil be an object containing all the arguments passed to function, a userInput field with email, name, password)
   // Pulling out email and name from userInput, which is pulled out of args. So don't need args.userInput.email, etc.
   // Refactored to use ES6 concise method syntax
-  async createUser({ userInput: { email, name, password } }, req) {
+  createUser: async function ({ userInput: { email, name, password } }, req) {
     // Without ES6 concise method syntax: createUser: async function ({ userInput: { email, name, password } }, req) {
     // userInput because field named that way in schema
 
@@ -49,7 +49,7 @@ module.exports = {
     return { ...createdUser._doc, _id: createdUser._id.toString() };
   },
   // Get both email and password as args (destructuring from args here) since they are defined in login query
-  async login({ email, password }) {
+  login: async function ({ email, password }) {
     // Find user with corresponding email address and confirm password
     const user = await User.findOne({ email });
     if (!user) {
@@ -76,7 +76,10 @@ module.exports = {
     return { token, userId: user._id.toString() };
   },
   // Will use req to get user data
-  async createPost({ postInput: { title, content, imageUrl } }, req) {
+  createPost: async function (
+    { postInput: { title, content, imageUrl } },
+    req
+  ) {
     if (!req.isAuth) {
       const error = new Error('Not authenticated.');
       error.code = 401;
