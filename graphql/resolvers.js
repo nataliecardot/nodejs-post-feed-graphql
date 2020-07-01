@@ -6,7 +6,7 @@ const User = require('../models/user');
 const Post = require('../models/post');
 
 module.exports = {
-  createUser: async function ({ userInput }, req) {
+  async createUser({ userInput }, req) {
     //   const email = args.userInput.email;
     const errors = [];
     if (!validator.isEmail(userInput.email)) {
@@ -38,7 +38,7 @@ module.exports = {
     const createdUser = await user.save();
     return { ...createdUser._doc, _id: createdUser._id.toString() };
   },
-  login: async function ({ email, password }) {
+  async login({ email, password }) {
     const user = await User.findOne({ email: email });
     if (!user) {
       const error = new Error('User not found.');
@@ -61,7 +61,7 @@ module.exports = {
     );
     return { token: token, userId: user._id.toString() };
   },
-  createPost: async function ({ postInput }, req) {
+  async createPost({ postInput }, req) {
     if (!req.isAuth) {
       const error = new Error('Not authenticated!');
       error.code = 401;
@@ -108,7 +108,7 @@ module.exports = {
       updatedAt: createdPost.updatedAt.toISOString(),
     };
   },
-  posts: async function (args, req) {
+  async posts(args, req) {
     if (!req.isAuth) {
       const error = new Error('Not authenticated!');
       error.code = 401;
