@@ -3,6 +3,7 @@ const validator = require('validator'); // express-validator (used in another pr
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
+const Post = require('../models/post');
 
 // Resolvers: Logic that will be executed for incoming queries
 
@@ -44,7 +45,7 @@ module.exports = {
       password: hashedPw,
     });
     const createdUser = await user.save();
-    // _doc field: All the user data, without all the metadata added by Mongoose. Overriding the _id field (to convert from objectId field to string field) by adding it as separate property
+    // _doc field: All the user data, without all the metadata added by Mongoose. Overriding id field since must return string, not MongoDB ObjectId
     return { ...createdUser._doc, _id: createdUser._id.toString() };
   },
   // Get both email and password as args (destructuring from args here) since they are defined in login query
@@ -73,5 +74,48 @@ module.exports = {
       { expiresIn: '1h' }
     );
     return { token, userId: user._id.toString() };
+  },
+  // Will use req to get user data
+  async createPost({ postInput: { title, content, imageUrl } }, req) {
+    const errors = [];
+    if (
+      validator.isEmpty(postInput.title) ||
+      !validator.isLength(postInput.title, { min: 5 })
+    ) {
+      errors.push({
+        message:
+          'Invalid title. Please ensure a minimum length of 5 characters.',
+      });
+    }
+    if (
+      validator.isEmpty(postInput.content) ||
+      !validator.isLength(postInput.content, { min: 5 })
+    ) {
+      errors.push({
+        message:
+          'Invalid content. Please ensure a minimum length of 5 characters.',
+      });
+    }
+    if (errors.length > 0) {
+      const error = new Error('Invalid input.');
+      error.data = errors;
+      error.code = 422;
+      throw error;
+    }
+    const post = new Post({
+      title,
+      content,
+      imageUrl,
+      // Add creator once can retrieve user
+    });
+    const createdPost = await post.save();
+    // Add post to users' posts once can retrieve user
+    // In addition to id, overriding createdAt and updatedAt because these will be stored as date types, which GraphQL doesn't understand
+    return {
+      ...createdPost._doc,
+      _id: createPost._id.toString(),
+      createdAt: createdPost.createdAt.toISOString(),
+      updatedAt: createdPost.updatedAt.toISOString(),
+    };
   },
 };
