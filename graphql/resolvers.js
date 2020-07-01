@@ -61,22 +61,19 @@ module.exports = {
     );
     return { token, userId: user._id.toString() };
   },
-  async createPost({ postInput }, req) {
+  async createPost({ postInput: { title, content, imageUrl } }, req) {
     if (!req.isAuth) {
       const error = new Error('Not authenticated!');
       error.code = 401;
       throw error;
     }
     const errors = [];
-    if (
-      validator.isEmpty(postInput.title) ||
-      !validator.isLength(postInput.title, { min: 5 })
-    ) {
+    if (validator.isEmpty(title) || !validator.isLength(title, { min: 5 })) {
       errors.push({ message: 'Title is invalid.' });
     }
     if (
-      validator.isEmpty(postInput.content) ||
-      !validator.isLength(postInput.content, { min: 5 })
+      validator.isEmpty(content) ||
+      !validator.isLength(content, { min: 5 })
     ) {
       errors.push({ message: 'Content is invalid.' });
     }
@@ -93,9 +90,9 @@ module.exports = {
       throw error;
     }
     const post = new Post({
-      title: postInput.title,
-      content: postInput.content,
-      imageUrl: postInput.imageUrl,
+      title,
+      content,
+      imageUrl,
       creator: user,
     });
     const createdPost = await post.save();
@@ -125,7 +122,7 @@ module.exports = {
           updatedAt: p.updatedAt.toISOString(),
         };
       }),
-      totalPosts: totalPosts,
+      totalPosts,
     };
   },
 };
