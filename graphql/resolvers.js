@@ -6,15 +6,15 @@ const User = require('../models/user');
 const Post = require('../models/post');
 
 module.exports = {
-  async createUser({ userInput }, req) {
+  async createUser({ userInput: { email, name, password } }, req) {
     //   const email = args.userInput.email;
     const errors = [];
-    if (!validator.isEmail(userInput.email)) {
+    if (!validator.isEmail(email)) {
       errors.push({ message: 'E-Mail is invalid.' });
     }
     if (
-      validator.isEmpty(userInput.password) ||
-      !validator.isLength(userInput.password, { min: 5 })
+      validator.isEmpty(password) ||
+      !validator.isLength(password, { min: 5 })
     ) {
       errors.push({ message: 'Password too short!' });
     }
@@ -24,22 +24,22 @@ module.exports = {
       error.code = 422;
       throw error;
     }
-    const existingUser = await User.findOne({ email: userInput.email });
+    const existingUser = await User.findOne({ email: email });
     if (existingUser) {
       const error = new Error('User exists already!');
       throw error;
     }
-    const hashedPw = await bcrypt.hash(userInput.password, 12);
+    const hashedPw = await bcrypt.hash(password, 12);
     const user = new User({
-      email: userInput.email,
-      name: userInput.name,
+      email,
+      name,
       password: hashedPw,
     });
     const createdUser = await user.save();
     return { ...createdUser._doc, _id: createdUser._id.toString() };
   },
   async login({ email, password }) {
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ email });
     if (!user) {
       const error = new Error('User not found.');
       error.code = 401;
@@ -59,7 +59,7 @@ module.exports = {
       'somesupersecretsecret',
       { expiresIn: '1h' }
     );
-    return { token: token, userId: user._id.toString() };
+    return { token, userId: user._id.toString() };
   },
   async createPost({ postInput }, req) {
     if (!req.isAuth) {
