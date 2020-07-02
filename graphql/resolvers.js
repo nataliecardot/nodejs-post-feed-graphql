@@ -9,7 +9,7 @@ const Post = require('../models/post');
 
 // Mutation
 module.exports = {
-  // args: input (args wil be an object containing all the arguments passed to function, a userInput field with email, name, password)
+  // args: input (args wil be an object containing all arguments passed to function, userInput field with email, name, password)
   // Pulling out email and name from userInput, which is pulled out of args. So don't need args.userInput.email, etc.
   // Refactored to use ES6 concise method syntax
   async createUser({ userInput: { email, name, password } }, req) {
