@@ -13,7 +13,6 @@ const User = require('../models/user');
 exports.getPosts = async (req, res, next) => {
   const currentPage = req.query.page || 1;
   const perPage = 2;
-  let totalItems;
   // Behind the scenes, async/await is converted to then/catch. Async/await makes async code appear synchronous for better readibility. So can use try/catch instead of then/catch
   try {
     const totalItems = await Post.find().countDocuments();
