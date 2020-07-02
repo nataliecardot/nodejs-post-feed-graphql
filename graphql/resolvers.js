@@ -134,7 +134,9 @@ module.exports = {
       error.code = 401;
       throw error;
     }
-    !page && 1;
+    if (!page) {
+      page = 1;
+    }
     const perPage = 2;
     const totalPosts = await Post.find().countDocuments();
     const posts = await Post.find()
