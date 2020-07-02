@@ -45,7 +45,7 @@ module.exports = {
       password: hashedPw,
     });
     const createdUser = await user.save();
-    // _doc field: All the user data, without all the metadata added by Mongoose. Overriding id field since must return string, not MongoDB ObjectId
+    // _doc field: All user data, without metadata added by Mongoose. Overriding id field since must return string, not MongoDB ObjectId
     return { ...createdUser._doc, _id: createdUser._id.toString() };
   },
   // Get both email and password as args (destructuring from args here) since they are defined in login query
