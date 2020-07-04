@@ -67,6 +67,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(auth);
+
 // Could also use POST, but replacing image so PUT more appropriate
 app.put('/post-image', (req, res, next) => {
   // When file is uploaded, multer extracts file and populates file object with info about the extracted file
@@ -83,8 +85,6 @@ app.put('/post-image', (req, res, next) => {
       .json({ message: 'File stored.', filePath: req.file.path })
   );
 });
-
-app.use(auth);
 
 app.use(
   '/graphql',
