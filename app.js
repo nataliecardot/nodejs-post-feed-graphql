@@ -71,6 +71,9 @@ app.use(auth);
 
 // Could also use POST, but replacing image so PUT more appropriate
 app.put('/post-image', (req, res, next) => {
+  if (!req.isAuth) {
+    throw new Error('Not authenticated.');
+  }
   // When file is uploaded, multer extracts file and populates file object with info about the extracted file
   if (!req.file) {
     return res.status(200).json({ message: 'No file provided' });
