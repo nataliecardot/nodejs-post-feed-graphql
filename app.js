@@ -67,6 +67,7 @@ app.use((req, res, next) => {
   next();
 });
 
+// Could also use POST, but replacing image so PUT more appropriate
 app.put('/post-image', (req, res, next) => {
   // When file is uploaded, multer extracts file and populates file object with info about the extracted file
   if (!req.file) {
