@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -66,6 +67,22 @@ app.use((req, res, next) => {
   next();
 });
 
+app.put('/post-image', (req, res, next) => {
+  // When file is uploaded, multer extracts file and populates file object with info about the extracted file
+  if (!req.file) {
+    return res.status(200).json({ message: 'No file provided' });
+  }
+  if (req.body.oldPath) {
+    clearImage(req.body.oldPath);
+  }
+  return (
+    res
+      .status(201)
+      // req.file.path is where multer stores image. Can then be used in front end
+      .json({ message: 'File stored.', filePath: req.file.path })
+  );
+});
+
 app.use(auth);
 
 app.use(
@@ -111,3 +128,8 @@ mongoose
     app.listen(8080);
   })
   .catch((err) => console.log(err));
+
+const clearImage = (filePath) => {
+  filePath = path.join(__dirname, '..', filePath);
+  fs.unlink(filePath, (err) => console.log(err));
+};
