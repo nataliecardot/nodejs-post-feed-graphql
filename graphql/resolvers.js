@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
 const Post = require('../models/post');
+const { clearImage } = require('../util/file');
 
 // Resolvers: Logic that will be executed for incoming queries
 
@@ -224,5 +225,31 @@ module.exports = {
       createdAt: updatedPost.createdAt.toISOString(),
       updatedAt: updatedPost.updatedAt.toISOString(),
     };
+  },
+  async deletePost({ id }, req) {
+    if (!req.isAuth) {
+      const error = new Error('Not authenticated!');
+      error.code = 401;
+      throw error;
+    }
+    const post = await Post.findById(id);
+    if (!post) {
+      const error = new Error('No post found.');
+      error.code = 404;
+      throw error;
+    }
+    // creator is just user's _id because it's stored that way in the post, and not populating creator field here (as done above)
+    if (post.creator.toString() !== req.userId.toString()) {
+      const error = new Error('Not authorized.');
+      error.code = 403;
+      throw error;
+    }
+    clearImage(post.imageUrl);
+    await Post.findByIdAndRemove(id);
+    // Also remove post from associated user document
+    const user = await User.findById(req.userId);
+    user.posts.pull(id);
+    await user.save();
+    return true;
   },
 };
