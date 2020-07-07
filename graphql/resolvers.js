@@ -252,6 +252,7 @@ module.exports = {
     await user.save();
     return true;
   },
+  // Query used to fetch user status
   async user(args, req) {
     if (!req.isAuth) {
       const error = new Error('Not authenticated!');
