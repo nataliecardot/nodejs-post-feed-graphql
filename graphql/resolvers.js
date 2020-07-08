@@ -8,7 +8,7 @@ const { clearImage } = require('../util/file');
 
 // Resolvers: Logic that will be executed for incoming queries
 
-// Mutation
+// Mutations and queries
 module.exports = {
   // args: input (args wil be an object containing all arguments passed to function, userInput field with email, name, password)
   // Pulling out email and name from userInput, which is pulled out of args. So don't need args.userInput.email, etc.
@@ -16,7 +16,6 @@ module.exports = {
   async createUser({ userInput: { email, name, password } }, req) {
     // Without ES6 concise method syntax: createUser: async function ({ userInput: { email, name, password } }, req) {
     // userInput because field named that way in schema
-
     const errors = [];
     if (!validator.isEmail(email)) {
       errors.push({ message: 'Invalid email.' });
@@ -261,10 +260,26 @@ module.exports = {
     }
     const user = await User.findById(req.userId);
     if (!user) {
-      const error = new Error('No user found.');
+      const error = new Error('User not found.');
       error.code = 404;
       throw error;
     }
+    return { ...user._doc, _id: user._id.toString() };
+  },
+  async updateStatus({ status }, req) {
+    if (!req.isAuth) {
+      const error = new Error('Not authenticated!');
+      error.code = 401;
+      throw error;
+    }
+    const user = await User.findById(req.userId);
+    if (!user) {
+      const error = new Error('User not found.');
+      error.code = 404;
+      throw error;
+    }
+    user.status = status;
+    await user.save();
     return { ...user._doc, _id: user._id.toString() };
   },
 };
