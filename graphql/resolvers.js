@@ -214,6 +214,7 @@ module.exports = {
     }
     post.title = title;
     post.content = content;
+    // Has to be checked against text because it will be converted to text by the way it's being sent on front end
     if (imageUrl !== 'undefined') {
       post.imageUrl = imageUrl;
     }
