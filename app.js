@@ -129,6 +129,7 @@ mongoose
     useNewUrlParser: true,
   })
   .then((result) => {
+    // Hosting provider automatically injects port environment variable
     app.listen(process.env.PORT || 8080);
   })
   .catch((err) => console.log(err));
