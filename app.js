@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const multer = require('multer');
 const graphqlHttp = require('express-graphql');
 const { uuid } = require('uuidv4');
+const helmet = require('helmet');
 
 const graphqlSchema = require('./graphql/schema');
 const graphqlResolver = require('./graphql/resolvers');
@@ -39,6 +40,9 @@ const fileFilter = (req, file, cb) => {
       cb(null, true)
     : cb(null, false);
 };
+
+// Set secure response header(s) with Helmet
+app.use(helmet());
 
 // Middleware needed to parse incoming JSON data so can extract it on the request body (body parser adds body field on incoming request)
 // app.use(bodyParser.urlencoded()); // For x-www-form-urlencoded, default format for data sent via form post request
